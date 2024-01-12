@@ -1,7 +1,7 @@
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect } from "react";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteEvent, getAllEventsShop } from "../../redux/actions/event";
@@ -26,6 +26,9 @@ const AllEvents = () => {
       .catch((error) => {
         console.log(error);
       });
+  }
+  const handleEdit = () => {
+
   }
 
   const columns = [
@@ -70,7 +73,7 @@ const AllEvents = () => {
         return (
           <>
             <Link to={`/product/${product_name}`}>
-              <Button>
+            <Button style={{ background: "#3379b6", color: "#fff"}}>
                 <AiOutlineEye size={20} />
               </Button>
             </Link>
@@ -87,13 +90,14 @@ const AllEvents = () => {
       sortable: false,
       renderCell: (params) => {
         return (
-          <>
-            <Button
-            onClick={() => handleDelete(params.id)}
-            >
+          <div className="flex gap-3">
+            <Button onClick={() => handleDelete(params.id)} style={{ background: "#ef3a57", color: "#fff"}}> 
               <AiOutlineDelete size={20} />
             </Button>
-          </>
+            <Button onClick={() => handleEdit(params.id)} style={{ background: "#2ca457", color: "#fff"}}>
+              <AiOutlineEdit size={20} />
+            </Button>
+          </div>
         );
       },
     },

@@ -6,7 +6,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -15,6 +15,8 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../../redux/actions/wishlist";
+import { server } from "../../../server";
+import axios from "axios";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -23,8 +25,31 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   //   const [select, setSelect] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
 
-  const handleMessageSubmit = () => {};
+  const navigate = useNavigate()
+
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
+  };
 
   const decrementCount = () => {
     if (count > 1) {
@@ -70,7 +95,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   };
 
   return (
-    <div className="bg-[#fff]">
+    <div className="bg-[#fff] z-50">
       {data ? (
         <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center">
           <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
@@ -99,7 +124,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   </Link>
                 </div>
                 <div
-                  className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11`}
+                  className={`${styles.button} bg-[#000] w-[50%] mt-4 rounded-[4px] h-11`}
                   onClick={handleMessageSubmit}
                 >
                   <span className="text-[#fff] flex items-center">
@@ -161,7 +186,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   </div>
                 </div>
                 <div
-                  className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
+                  className={`${styles.button} w-[50%] mt-6 rounded-[4px] h-11 flex items-center`}
                   onClick={() => addToCartHandler(data._id)}
                 >
                   <span className="text-[#fff] flex items-center">

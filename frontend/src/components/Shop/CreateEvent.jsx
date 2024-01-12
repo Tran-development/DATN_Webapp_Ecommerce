@@ -155,8 +155,8 @@ const CreateEvent = () => {
           ></textarea>
           <h2 className="py-2">You can use your voice to write description !</h2>
           <div className="w-full flex gap-5">
-            <button className='mt-2 cursor-pointer appearance-none text-center block w-1/2 px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' onClick={startListening}>Start Listening</button>
-            <button className='mt-2 cursor-pointer appearance-none text-center block w-1/2 px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' onClick={SpeechRecognition.stopListening}>Stop Listening</button>
+            <button className='mt-2 bg-gray-200 cursor-pointer appearance-none text-center block w-1/2 px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' onClick={startListening}>Start Listening</button>
+            <button className='mt-2 bg-gray-200 cursor-pointer appearance-none text-center block w-1/2 px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' onClick={SpeechRecognition.stopListening}>Stop Listening</button>
 
           </div>
           {/* <SpeechToText /> */}
@@ -296,7 +296,7 @@ const CreateEvent = () => {
             <input
               type="submit"
               value="Create"
-              className="mt-2 cursor-pointer appearance-none text-center block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-2 bg-gray-200 cursor-pointer appearance-none text-center block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
         </div>

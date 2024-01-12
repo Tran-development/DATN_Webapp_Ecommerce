@@ -14,35 +14,35 @@ export const createProduct =
     shopId,
     images
   ) =>
-  async (dispatch) => {
-    try {
-      dispatch({
-        type: "productCreateRequest",
-      });
+    async (dispatch) => {
+      try {
+        dispatch({
+          type: "productCreateRequest",
+        });
 
-      const { data } = await axios.post(
-        `${server}/product/create-product`,
-        name,
-        description,
-        category,
-        tags,
-        originalPrice,
-        discountPrice,
-        stock,
-        shopId,
-        images,
-      );
-      dispatch({
-        type: "productCreateSuccess",
-        payload: data.product,
-      });
-    } catch (error) {
-      dispatch({
-        type: "productCreateFail",
-        payload: error.response.data.message,
-      });
-    }
-  };
+        const { data } = await axios.post(
+          `${server}/product/create-product`,
+          name,
+          description,
+          category,
+          tags,
+          originalPrice,
+          discountPrice,
+          stock,
+          shopId,
+          images,
+        );
+        dispatch({
+          type: "productCreateSuccess",
+          payload: data.product,
+        });
+      } catch (error) {
+        dispatch({
+          type: "productCreateFail",
+          payload: error.response.data.message,
+        });
+      }
+    };
 
 // get All Products of a shop
 export const getAllProductsShop = (id) => async (dispatch) => {
@@ -91,6 +91,51 @@ export const deleteProduct = (id) => async (dispatch) => {
     });
   }
 };
+
+// edit product
+// edit product
+export const editProduct = (
+  productId,
+  name,
+  description,
+  category,
+  tags,
+  originalPrice,
+  discountPrice,
+  stock,
+  images
+) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "editProductRequest",
+    });
+
+    const { data } = await axios.put(
+      `${server}/product/edit-product/${productId}`,
+      {
+        name,
+        description,
+        category,
+        tags,
+        originalPrice,
+        discountPrice,
+        stock,
+        images
+      }
+    );
+
+    dispatch({
+      type: "editProductSuccess",
+      payload: data.product,
+    });
+  } catch (error) {
+    dispatch({
+      type: "editProductFail",
+      payload: error?.response?.data?.message,
+    });
+  }
+};
+
 
 // get all products
 export const getAllProducts = () => async (dispatch) => {

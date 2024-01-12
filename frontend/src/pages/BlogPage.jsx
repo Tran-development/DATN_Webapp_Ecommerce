@@ -4,6 +4,7 @@ import BlogCard from "../components/Blogs/BlogCard";
 import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
 import styles from "../styles/styles";
+import Footer from "../components/Layout/Footer";
 
 
 const BlogsPage = () => {
@@ -14,22 +15,27 @@ const BlogsPage = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div>
-          <Header activeHeading={2} />
-          <br />
-          <br />
-          <div className={`${styles.section} flex gap-10 sm:flex-wrap`}>
-            <div className="grid grid-cols-1 gap-[20px] md:grid-cols-4 md:gap-[25px] xl:grid-cols-${grid} lg:gap-[25px] xl:gap-[30px] mb-12">
-              {allBlogs.length !== 0 ? (
-                allBlogs.map((blog) => (
-                  <BlogCard key={blog.name} data={blog} />
-                ))
-              ) : ( 
-                <h4 key="no-blogs">No Blogs available!</h4>
-              )}
+        <>
+          <div>
+            <Header activeHeading={2} />
+            <br />
+            <br />
+            <div className={`${styles.section} flex gap-10`}>
+              <div className="w-full mb-5">
+                <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] xl:grid-cols-3 lg:gap-[25px] xl:gap-[30px] mb-12">
+                  {allBlogs.length !== 0 ? (
+                    allBlogs.map((blog) => (
+                      <BlogCard key={blog.name} data={blog} />
+                    ))
+                  ) : (
+                    <h4 key="no-blogs">No Blogs available!</h4>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+          <Footer />
+        </>
       )}
     </>
   );

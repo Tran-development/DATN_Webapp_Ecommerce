@@ -135,7 +135,9 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           className="w-[100px] h-min ml-2 mr-2 rounded-[5px]"
         />
         <div className="pl-2">
-          <h1>{data.name}</h1>
+        <h1 className="pb-2 font-[500]">
+            {data.name.length > 40 ? data.name.slice(0, 20) + "..." : data.name}
+          </h1>
           <h4 className="font-[400] text-[15px] text-[#00000082]">
             ${data.discountPrice} * {value}
           </h4>
@@ -144,8 +146,8 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           </h4>
         </div>
         <RxCross1
-          className="cursor-pointer mx-8 hover:text-redsub-400"
-          size={40}
+          className="w-[35px] cursor-pointer mx-8 hover:text-redsub-400"
+          // size={40}
           onClick={() => removeFromCartHandler(data)}
         />
       </div>

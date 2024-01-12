@@ -1,0 +1,33 @@
+/* styles.css */
+
+.pageItem {
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.pageItem:first-child .pageLink {
+    display: block;
+}
+
+.pageItem:first-child + .pageItem .pageLink {
+    display: block;
+    opacity: 1;
+}
+
+.pageLink {
+    padding: 0.5rem;
+    color: black;
+    background-color: white;
+    border-radius: 0.25rem;
+    text-decoration: none;
+}
+
+.pagination {
+    margin-top: 1rem;
+}
+
+.active .pageLink {
+    background-color: #46b522;
+    color: white;
+    font-weight: bold;
+}

@@ -23,12 +23,12 @@ const AllSellers = () => {
 
   const handleDelete = async (id) => {
     await axios
-    .delete(`${server}/shop/delete-seller/${id}`, { withCredentials: true })
-    .then((res) => {
-      toast.success(res.data.message);
-    });
+      .delete(`${server}/shop/delete-seller/${id}`, { withCredentials: true })
+      .then((res) => {
+        toast.success(res.data.message);
+      });
 
-  dispatch(getAllSellers());
+    dispatch(getAllSellers());
   };
 
   const columns = [
@@ -36,7 +36,7 @@ const AllSellers = () => {
 
     {
       field: "name",
-      headerName: "name",
+      headerName: "Name",
       minWidth: 130,
       flex: 0.7,
     },
@@ -56,42 +56,42 @@ const AllSellers = () => {
     },
 
     {
-      field: "joinedAt",
-      headerName: "joinedAt",
+      field: "oinedAt",
+      headerName: "Joined At",
       type: "text",
       minWidth: 130,
       flex: 0.8,
     },
     {
-        field: "  ",
-        flex: 1,
-        minWidth: 150,
-        headerName: "Preview Shop",
-        type: "number",
-        sortable: false,
-        renderCell: (params) => {
-          return (
-            <>
-            <Link to={`/shop/preview/${params.id}`}>
-            <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-            </>
-          );
-        },
-      },
-    {
-      field: " ",
+      field: "  ",
       flex: 1,
       minWidth: 150,
-      headerName: "Delete Seller",
+      headerName: "Preview Shop",
       type: "number",
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-            <Button onClick={() => setUserId(params.id) || setOpen(true)}>
+            <Link to={`/shop/preview/${params.id}`}>
+              <Button style={{ background: "#3379b6", color: "#fff" }}>
+                <AiOutlineEye size={20} />
+              </Button>
+            </Link>
+          </>
+        );
+      },
+    },
+    {
+      field: " ",
+      flex: 1,
+      minWidth: 150,
+      headerName: "Action",
+      type: "number",
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <>
+            <Button onClick={() => setUserId(params.id) || setOpen(true)} style={{ background: "#ef3a57", color: "#fff" }}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -102,7 +102,7 @@ const AllSellers = () => {
 
   const row = [];
   sellers &&
-  sellers.forEach((item) => {
+    sellers.forEach((item) => {
       row.push({
         id: item._id,
         name: item?.name,
@@ -143,7 +143,7 @@ const AllSellers = () => {
                 </div>
                 <div
                   className={`${styles.button} text-white text-[18px] !h-[42px] ml-4`}
-                  onClick={() =>  setOpen(false) || handleDelete(userId)}
+                  onClick={() => setOpen(false) || handleDelete(userId)}
                 >
                   confirm
                 </div>

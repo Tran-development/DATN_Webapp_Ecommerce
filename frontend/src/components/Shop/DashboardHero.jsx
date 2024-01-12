@@ -62,8 +62,8 @@ const DashboardHero = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/dashboard/order/${params.id}`}>
-              <Button>
+            <Link to={`/order/${params.id}`}>
+              <Button style={{ background: "#2ca457", color: "#fff"}}> 
                 <AiOutlineArrowRight size={20} />
               </Button>
             </Link>
@@ -147,7 +147,7 @@ const DashboardHero = () => {
       <DataGrid
         rows={row}
         columns={columns}
-        pageSize={10}
+        pageSize={4}
         disableSelectionOnClick
         autoHeight
       />

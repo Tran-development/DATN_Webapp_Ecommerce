@@ -1,17 +1,17 @@
 import { Button } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import React, { useEffect } from "react";
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteBlog, getAllBlogs, getAllBlogsShop } from "../../redux/actions/blog";
 import Loader from "../Layout/Loader";
 
 const AllBlogs = () => {
-  const {blogs, isLoading} = useSelector((state) => state.blogs);
+  const { blogs, isLoading } = useSelector((state) => state.blogs);
   const { seller } = useSelector((state) => state.seller);
 
-console.log(blogs, seller);
+  console.log(blogs, seller);
 
 
   const dispatch = useDispatch();
@@ -30,6 +30,10 @@ console.log(blogs, seller);
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  const handleEdit = () => {
+    
   }
 
   const columns = [
@@ -74,7 +78,7 @@ console.log(blogs, seller);
         return (
           <>
             <Link to={`/blog/${blog_name}`}>
-              <Button>
+              <Button style={{ background: "#3379b6", color: "#fff" }}>
                 <AiOutlineEye size={20} />
               </Button>
             </Link>
@@ -91,13 +95,14 @@ console.log(blogs, seller);
       sortable: false,
       renderCell: (params) => {
         return (
-          <>
-            <Button
-            onClick={() => handleDelete(params.id)}
-            >
+          <div className="flex gap-3">
+            <Button onClick={() => handleDelete(params.id)} style={{ background: "#ef3a57", color: "#fff" }}>
               <AiOutlineDelete size={20} />
             </Button>
-          </>
+            <Button onClick={() => handleEdit(params.id)} style={{ background: "#2ca457", color: "#fff" }}>
+              <AiOutlineEdit size={20} />
+            </Button>
+          </div>
         );
       },
     },
@@ -106,7 +111,7 @@ console.log(blogs, seller);
   const row = [];
 
   blogs &&
-  blogs.forEach((item) => {
+    blogs.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,

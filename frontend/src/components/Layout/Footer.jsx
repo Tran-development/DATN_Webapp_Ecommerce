@@ -19,30 +19,7 @@ const Footer = () => {
   return (
 
     <div className="bg-[#000] text-white">
-      <div className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-[#3cb815] py-7">
-        <h1 className="lg:text-4xl sm:text-3xl text-xl md:mb-0 mb-6 lg:leading-normal font-semibold md:w-2/5">
-          <span className="text-[#f8d94c]">Subscribe</span> us for get news{" "}
-          <br />
-          events and offers
-        </h1>
-        <div className="flex justify-center items-center">
-          <input
-            type="text"
-            required
-            placeholder="Type your email address ..."
-            className="text-gray-800 sm:w-72 w-full sm:mr-5 mr-1 lg:mb-0 mb-4 py-2.5 rounded px-2 border border-gray-200 hover:border-orange-600 focus:border-orange-700"
-          />
-          {/* button */}
-          <div className={`${styles.button} mt-[-15px] sm:mt-0`}>
-            <h2 className="text-sm">Submit</h2>
-
-            {/* shine box */}
-            <div className="absolute top-0 -inset-full h-full w-1/2  z-5 block transform -skew-x-12 l-[-40px] bg-gradient-to-r from-transparent to-white opacity-40 group-hover:animate-shine" />
-          </div>
-
-
-        </div>
-      </div>
+      
       <div className="grid grid-cols-1 sm:gird-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 sm:text-center">
         <ul className="px-5 text-center sm:text-start flex sm:block flex-col items-center">
           <img

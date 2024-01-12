@@ -1,7 +1,6 @@
 const express = require("express");
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-// const productImgResize = require("../middleware/uploadImages");
 const router = express.Router();
 const Product = require("../model/product");
 const Order = require("../model/order");
@@ -9,47 +8,15 @@ const Shop = require("../model/shop");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 
-// Import Express, multer, sharp và các module khác
-// const express = require("express");
-const multer = require("multer");
-const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
-
-// Tạo instance của Express router
-// const router = express.Router();
-
-// Khởi tạo multer để xử lý tải lên tệp tin
-const upload = multer({ dest: "public/images/products" });
-
-// Định nghĩa hàm middleware để thay đổi kích thước và chất lượng ảnh
-const productImgResize = (req, res, next) => {
-  if (!req.files) return next();
-  Promise.all(
-    req.files.map(async (file) => {
-      await sharp(file.path)
-        .resize(300, 300)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`public/images/products/${file.filename}`);
-      fs.unlinkSync(file.path);
-    })
-  )
-    .then(() => next())
-    .catch((error) => next(error));
-};
-
-// Định nghĩa route handler cho POST request
+// create product
 router.post(
   "/create-product",
-  upload.array("images"),
-  productImgResize,
-  async (req, res, next) => {
+  catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
       if (!shop) {
-        throw new ErrorHandler("Shop Id is invalid!", 400);
+        return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         let images = [];
 
@@ -58,23 +25,20 @@ router.post(
         } else {
           images = req.body.images;
         }
-
+      
         const imagesLinks = [];
-
+      
         for (let i = 0; i < images.length; i++) {
           const result = await cloudinary.v2.uploader.upload(images[i], {
             folder: "products",
-            transformation: [
-              { width: 1200, quality: "auto" }
-            ],
           });
-
+      
           imagesLinks.push({
             public_id: result.public_id,
             url: result.secure_url,
           });
         }
-
+      
         const productData = req.body;
         productData.images = imagesLinks;
         productData.shop = shop;
@@ -87,9 +51,9 @@ router.post(
         });
       }
     } catch (error) {
-      next(error);
+      return next(new ErrorHandler(error, 400));
     }
-  }
+  })
 );
 
 // get all products of a shop
@@ -115,7 +79,7 @@ router.delete(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const product = await Product.findByIdAndDelete(req.params.id);
+      const product = await Product.findById(req.params.id);
 
       if (!product) {
         return next(new ErrorHandler("Product is not found with this id", 404));
@@ -128,16 +92,51 @@ router.delete(
       }
     
       // await product.remove();
+      await Product.deleteOne({ _id: req.params.id });
 
-      res.status(200).json({
+      res.status(201).json({
         success: true,
-        message: "Product deleted successfully!",
+        message: "Product Deleted successfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
     }
   })
 );
+
+// edit product
+router.put(
+  "/edit-product/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+
+      // Kiểm tra kiểu dữ liệu của productId
+      if (typeof productId !== 'string') {
+        return next(new ErrorHandler("Invalid product id", 400));
+      }
+
+      const updatedProductData = { ...req.body };
+      const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        updatedProductData,
+        { new: true }
+      );
+      
+      if (!updatedProduct) {
+        return next(new ErrorHandler("Product is not found with this id", 404));
+      }
+      
+      res.status(200).json({
+        success: true,
+        product: updatedProduct,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
 
 // get all products
 router.get(
@@ -205,7 +204,7 @@ router.put(
 
       res.status(200).json({
         success: true,
-        message: "Reviewed succesfully!",
+        message: "Reviwed succesfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));

@@ -38,8 +38,15 @@ const ProductDetails = ({ data }) => {
     }
   }, [data, wishlist]);
 
+  // console.log(data.stock);
+
   const incrementCount = () => {
-    setCount(count + 1);
+    const productSeeing = data.stock - 2
+    if (count < productSeeing) {
+      setCount(count + 1);
+    } else {
+      toast.error("Quantity exceeded!");
+    }
   };
 
   const decrementCount = () => {
@@ -134,7 +141,7 @@ const ProductDetails = ({ data }) => {
                         <img
                           src={`${i?.url}`}
                           alt=""
-                          className="h-[200px] overflow-hidden mr-3 mt-3"
+                          className="h-[150px] overflow-hidden mr-3 mt-3"
                           onClick={() => setSelect(index)}
                         />
                       </div>
@@ -146,8 +153,8 @@ const ProductDetails = ({ data }) => {
                 </div>
               </div>
               <div className="w-full 800px:w-[50%] pt-5">
-                <h1 className={`${styles.productTitle}`}>{data.name}</h1>
-                <p>{data.description}</p>
+                <h1 className={`${styles.productTitle} text-justify`}>{data.name}</h1>
+                <p className="text-justify">{data.description}</p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
                     {data.discountPrice}$
@@ -165,9 +172,20 @@ const ProductDetails = ({ data }) => {
                     >
                       -
                     </button>
-                    <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
-                      {count}
-                    </span>
+                    <input
+                      type="text"
+                      value={count === 0 ? '' : count}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        if (/^\d*$/.test(inputValue)) {
+                          const newCount = Math.max(0, Math.min(Number(inputValue), data.stock - 2));
+                          setCount(newCount);
+                        }
+                      }}
+                      className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px] w-[70px] text-center"
+                    />
+
+
                     <button
                       className="bg-gradient-to-r from-organic-400 to-organic-700 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
                       onClick={incrementCount}
@@ -300,7 +318,7 @@ const ProductDetailsInfo = ({
       </div>
       {active === 1 ? (
         <>
-          <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
+          <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line text-justify">
             {data.description}
           </p>
         </>

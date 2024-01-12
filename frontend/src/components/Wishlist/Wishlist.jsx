@@ -75,10 +75,10 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
 
   return (
     <div className="border-b p-4">
-      <div className="w-full 800px:flex items-center justify-around">
+      <div className="800px:flex items-center justify-around">
         <RxCross1
-          className="cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 ml-2 hover:text-redsub-400"
-          size={30}
+          className="w-[35px] cursor-pointer 800px:mb-['unset'] 800px:ml-['unset'] mb-2 hover:text-redsub-400"
+          // size={30}
           onClick={() => removeFromWishlistHandler(data)}
         />
         <img
@@ -88,7 +88,10 @@ const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler }) => {
         />
 
         <div className="pl-[5px]">
-          <h1 className="text-sm font-semibold">{data.name}</h1>
+        <h1 className="pb-2 font-[500]">
+            {data.name.length > 40 ? data.name.slice(0, 30) + "..." : data.name}
+          </h1>
+          {/* <h1 className="text-sm font-semibold">{data.name}</h1> */}
           <h4 className="font-[600] pt-3 800px:pt-[3px] text-[17px] text-[#d02222] font-Roboto">
             US${totalPrice}
           </h4>

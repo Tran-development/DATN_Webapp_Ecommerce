@@ -15,19 +15,97 @@ import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
 import { RxCross1 } from "react-icons/rx";
+import { handleConnectWallet, sendTransaction } from "./ConnectToMetaMask"
+import { FaEthereum } from "react-icons/fa";
 
 const Payment = () => {
   const [orderData, setOrderData] = useState([]);
   const [open, setOpen] = useState(false);
   const { user } = useSelector((state) => state.user);
+  const [ethPrice, setEthPrice] = useState(null);
+  const [convertedEth, setConvertedEth] = useState(null);
+  const [testPrice, setTestPrice] = useState(null);
+
+
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
+  const totalPricetoEth = orderData?.totalPrice;
 
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
     setOrderData(orderData);
   }, []);
+
+  useEffect(() => {
+    const fetchEthPrice = async () => {
+      try {
+        const bnbPrice = await getEthPrice();
+        setEthPrice(bnbPrice);
+      } catch (error) {
+        console.error('Error fetching ETH price:', error);
+        // Xử lý lỗi nếu cần
+      }
+    };
+    fetchEthPrice();
+  }, []); // [] đảm bảo useEffect chỉ chạy sau khi component được mount
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Gọi API để lấy giá trị ethPrice
+      const ethPriceFromApi = await getEthPrice();
+
+      // Gọi hàm converEth khi cả ethPrice và totalPricetoEth có sẵn
+      if (ethPriceFromApi && totalPricetoEth) {
+        converEth(ethPriceFromApi, totalPricetoEth);
+      }
+    };
+
+    fetchData();
+  }, [totalPricetoEth]);
+
+  const converEth = (ethPrice, totalPricetoEth) => {
+    const results = totalPricetoEth / ethPrice;
+    if (results) {
+      setConvertedEth(results);
+      return results;
+    }
+  };
+  
+  const handleConversion = async () => {
+    if (ethPrice && totalPricetoEth) {
+      const testPrice = converEth(ethPrice, totalPricetoEth);
+      console.log(testPrice);
+      setTestPrice(testPrice);
+      await sendTransaction(
+        testPrice,
+        (result) => {
+          cashOnDeliveryHandler(result)
+        },
+        (error) => {
+          console.log('Transaction failed! Error: ' + error.message);
+        }
+      );
+    }
+  };
+
+  const getEthPrice = async () => {
+    const usdToBnbSymbol = 'BNBUSDT'; // BNB to USDT
+    const response = await axios.get('https://api.binance.com/api/v3/ticker/price', {
+      params: {
+        symbol: usdToBnbSymbol,
+      },
+    });
+
+    const bnbPrice = response.data.price;
+
+    if (bnbPrice) {
+      return bnbPrice;
+    } else {
+      throw new Error('Unable to fetch ETH price');
+    }
+  };
+
 
   const createOrder = (data, actions) => {
     return actions.order
@@ -92,6 +170,7 @@ const Payment = () => {
         localStorage.setItem("cartItems", JSON.stringify([]));
         localStorage.setItem("latestOrder", JSON.stringify([]));
         window.location.reload();
+        navigate("/user/order/:id");
       });
   };
 
@@ -151,7 +230,7 @@ const Payment = () => {
   };
 
   const cashOnDeliveryHandler = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
 
     const config = {
       headers: {
@@ -164,16 +243,17 @@ const Payment = () => {
     };
 
     await axios
-    .post(`${server}/order/create-order`, order, config)
-    .then((res) => {
-      setOpen(false);
-      navigate("/order/success");
-      toast.success("Order successful!");
-      localStorage.setItem("cartItems", JSON.stringify([]));
-      localStorage.setItem("latestOrder", JSON.stringify([]));
-      window.location.reload();
-    });
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        window.location.reload();
+      });
   };
+
 
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -187,10 +267,13 @@ const Payment = () => {
             createOrder={createOrder}
             paymentHandler={paymentHandler}
             cashOnDeliveryHandler={cashOnDeliveryHandler}
+            setTestPrice={setTestPrice}
           />
         </div>
+
         <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
-          <CartData orderData={orderData} />
+          <CartData orderData={orderData} testPrice={testPrice} />
+        <button onClick={handleConversion} className="mt-2 font-bold w-full 800px:w-[100%] bg-[#fff] rounded-md p-5 pb-8">Convert USD to ETH</button>
         </div>
       </div>
     </div>
@@ -205,6 +288,7 @@ const PaymentInfo = ({
   createOrder,
   paymentHandler,
   cashOnDeliveryHandler,
+  setTestPrice
 }) => {
   const [select, setSelect] = useState(1);
 
@@ -356,29 +440,27 @@ const PaymentInfo = ({
                       onClick={() => setOpen(false)}
                     />
                   </div>
-                    <PayPalScriptProvider
-                      options={{
-                        "client-id":
-                          "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
-                      }}
-                    >
-                      <PayPalButtons
-                        style={{ layout: "vertical" }}
-                        onApprove={onApprove}
-                        createOrder={createOrder}
-                      />
-                    </PayPalScriptProvider>
+                  <PayPalScriptProvider
+                    options={{
+                      "client-id":
+                        "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
+                    }}
+                  >
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      onApprove={onApprove}
+                      createOrder={createOrder}
+                    />
+                  </PayPalScriptProvider>
                 </div>
               </div>
             )}
           </div>
         ) : null}
-      </div>
-
-      <br />
-      {/* cash on delivery */}
+      </div>  
+      {/* Meta mask */}
       <div>
-        <div className="flex w-full pb-5 border-b mb-2">
+        <div className="flex w-full pb-5 pt-5 border-b mb-2">
           <div
             className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
             onClick={() => setSelect(3)}
@@ -388,12 +470,36 @@ const PaymentInfo = ({
             ) : null}
           </div>
           <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
+            Pay with metamask
+          </h4>
+        </div>
+        {/* cash on delivery */}
+        {select === 3 ? (
+          <div className="w-full flex">
+            <div className="w-full">
+              <button className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`} onClick={() => handleConnectWallet()}>Connect</button>
+            </div>
+          </div>
+        ) : null}
+      </div>
+      <br />
+      {/* cash on delivery */}
+      <div>
+        <div className="flex w-full pb-5 border-b mb-2">
+          <div
+            className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
+            onClick={() => setSelect(4)}
+          >
+            {select === 4 ? (
+              <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
+            ) : null}
+          </div>
+          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
             Cash on Delivery
           </h4>
         </div>
-
         {/* cash on delivery */}
-        {select === 3 ? (
+        {select === 4 ? (
           <div className="w-full flex">
             <form className="w-full" onSubmit={cashOnDeliveryHandler}>
               <input
@@ -405,12 +511,14 @@ const PaymentInfo = ({
           </div>
         ) : null}
       </div>
+
     </div>
   );
 };
 
-const CartData = ({ orderData }) => {
+const CartData = ({ orderData, testPrice }) => {
   const shipping = orderData?.shipping?.toFixed(2);
+
   return (
     <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
       <div className="flex justify-between">
@@ -425,11 +533,22 @@ const CartData = ({ orderData }) => {
       <br />
       <div className="flex justify-between border-b pb-3">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-        <h5 className="text-[18px] font-[600]">{orderData?.discountPrice? "$" + orderData.discountPrice : "-"}</h5>
+        <h5 className="text-[18px] font-[600]">{orderData?.discountPrice ? "$" + orderData.discountPrice : "-"}</h5>
       </div>
-      <h5 className="text-[18px] font-[600] text-end pt-3">
-        ${orderData?.totalPrice}
+      <h5 className="flex justify-end items-center text-[18px] font-[600] text-end pt-3">
+        {`$${orderData?.totalPrice}`}
       </h5>
+      <h5 className="flex justify-end items-center text-[18px] font-[600] text-end pt-3">
+        {testPrice ? (
+          <>
+            <FaEthereum/> {testPrice.toFixed(5)} ETH
+          </>
+        ) : (
+          ''
+        )}
+      </h5>
+
+
       <br />
     </div>
   );

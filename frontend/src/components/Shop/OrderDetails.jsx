@@ -99,7 +99,9 @@ const OrderDetails = () => {
               className="w-[80x] h-[80px]"
             />
             <div className="w-full">
-              <h5 className="pl-3 text-[20px] font-semibold">{item.name}</h5>
+            <h5 className="pl-3 text-[20px] font-semibold">
+            {item.name.length > 40 ? item.name.slice(0, 40) + "..." : item.name}
+          </h5>
               <h5 className="pl-3 text-[20px] text-[#00000091]">
                 US${item.discountPrice} x {item.qty}
               </h5>
@@ -119,7 +121,7 @@ const OrderDetails = () => {
           <h4 className="pt-3 text-[20px] font-[600]">Shipping Address:</h4>
           <h4 className="pt-3 text-[20px]">
             <span className="text-[18px]">Address 1: {data?.shippingAddress.address1}</span> <br />
-            <span className="text-[18px]">Address 2: {data?.shippingAddress.address2}</span>
+            {/* <span className="text-[18px]">Address 2: {data?.shippingAddress.address2}</span> */}
           </h4>
           <span className=" text-[18px]">Phone: {data?.user?.phoneNumber}</span>
         </div>
@@ -127,7 +129,7 @@ const OrderDetails = () => {
           <h4 className="pt-3 text-[20px]">Payment Info:</h4>
           <h4>
             Status:{" "}
-            {data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}
+            {data?.status ? data?.status : "Not Paid"}
           </h4>
         </div>
       </div>

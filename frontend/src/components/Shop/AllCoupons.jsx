@@ -96,7 +96,7 @@ const AllCoupons = () => {
       renderCell: (params) => {
         return (
           <>
-            <Button onClick={() => handleDelete(params.id)}>
+            <Button onClick={() => handleDelete(params.id)} style={{ background: "#ef3a57", color: "#fff" }}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -222,12 +222,11 @@ const AllCoupons = () => {
                       {products &&
                         products.map((i) => (
                           <option value={i.name} key={i.name}>
-                            {i.name}
+                            <span>{i.name?.slice(0, 60) + "..."}</span>
                           </option>
                         ))}
                     </select>
                   </div>
-                  <br />
                   <div>
                     <input
                       type="submit"

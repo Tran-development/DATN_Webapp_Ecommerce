@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { server } from "../../server";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@material-ui/data-grid";
-import { BsPencil } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles";
 import { toast } from "react-toastify";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const AllWithdraw = () => {
   const [data, setData] = useState([]);
@@ -32,8 +32,8 @@ const AllWithdraw = () => {
     {
       field: "name",
       headerName: "Shop Name",
-      minWidth: 180,
-      flex: 1.4,
+      minWidth: 100,
+      flex: 0.6,
     },
     {
       field: "shopId",
@@ -49,7 +49,7 @@ const AllWithdraw = () => {
     },
     {
       field: "status",
-      headerName: "status",
+      headerName: "Status",
       type: "text",
       minWidth: 80,
       flex: 0.5,
@@ -70,10 +70,11 @@ const AllWithdraw = () => {
       renderCell: (params) => {
 
         return (
-          <BsPencil
+          <AiOutlineEdit
             size={20}
             className={`${params.row.status !== "Processing" ? 'hidden' : '' } mr-5 cursor-pointer`}
             onClick={() => setOpen(true) || setWithdrawData(params.row)}
+            style={{ background: "#2ca457", color: "#fff"}}
           />
         );
       },

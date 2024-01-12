@@ -3,14 +3,15 @@ import styles from "../../styles/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "timeago.js";
-
-
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 
 const BlogDetails = ({ data }) => {
   const [select, setSelect] = useState(0);
   const { products } = useSelector((state) => state.products);
   const { allBlogs, isLoading } = useSelector((state) => state.blogs);
+  const [rating, setRating] = useState(1);
+  const [comment, setComment] = useState("");
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -37,6 +38,10 @@ const BlogDetails = ({ data }) => {
     // window.location.reload();
   }
 
+  const reviewHandler = async (e) => {
+
+  };
+
   return (
     <div className="bg-white">
       {data ? (
@@ -59,8 +64,57 @@ const BlogDetails = ({ data }) => {
                   alt=""
                   className="w-[100%] mt-6"
                 />
-                <div className="p-12" dangerouslySetInnerHTML={{ __html: data.description }}></div>
-
+                <div className="w-[100%] mt-6 text-justify" dangerouslySetInnerHTML={{ __html: data.description }}></div>
+                  <div className="w-[100%] mt-6 h-min bg-[#fff] shadow rounded-md p-3">
+                    {/* ratings */}
+                    <br />
+                    <h5 className="pl-3 text-[20px] font-[500]">
+                      Give a Rating <span className="text-red-500">*</span>
+                    </h5>
+                    <div className="flex w-full ml-2 pt-1">
+                      {[1, 2, 3, 4, 5].map((i) =>
+                        rating >= i ? (
+                          <AiFillStar
+                            key={i}
+                            className="mr-1 cursor-pointer"
+                            color="rgb(246,186,0)"
+                            size={25}
+                            onClick={() => setRating(i)}
+                          />
+                        ) : (
+                          <AiOutlineStar
+                            key={i}
+                            className="mr-1 cursor-pointer"
+                            color="rgb(246,186,0)"
+                            size={25}
+                            onClick={() => setRating(i)}
+                          />
+                        )
+                      )}
+                    </div>
+                    <br />
+                    <div className="w-full ml-3">
+                      <label className="block text-[20px] font-[500]">
+                        Leave a comment                        
+                      </label>
+                      <textarea
+                        name="comment"
+                        id=""
+                        cols="20"
+                        rows="5"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="How was your product? write your expresion about it!"
+                        className="mt-2 w-[95%] border p-2 outline-none"
+                      ></textarea>
+                    </div>
+                    <div
+                      className="group px-5 text-white py-2.5 overflow-hidden w-[20%] flex justify-center rounded-md items-center relative bg-[#ff7800] cursor-pointer"
+                      onClick={rating > 1 ? reviewHandler : null}
+                    >
+                      Post Comment
+                    </div>
+                  </div>
               </div>
               <div className="w-full 800px:w-[30%] pt-5">
                 <h3 className="text-[22px] font-medium mt-[130px]">Read More</h3>
@@ -71,7 +125,7 @@ const BlogDetails = ({ data }) => {
                       <Link
                         to={`/blog/${item._id}`}
                         onClick={() => handleNavigateToBlog(item._id)}
-                        className="text-[18px] text-organic-600 font-semibold hover:underline transition-all duration-300"
+                        className="text-[18px] text-organic-600 hover:text-organic-700 font-semibold hover:underline transition-all duration-300"
                       >
                         {item.name}
                       </Link>

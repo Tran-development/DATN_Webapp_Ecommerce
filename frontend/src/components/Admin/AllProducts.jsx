@@ -60,7 +60,7 @@ const AllProducts = () => {
         return (
           <>
             <Link to={`/product/${params.id}`}>
-              <Button>
+              <Button style={{ background: "#3379b6", color: "#fff"}}>
                 <AiOutlineEye size={20} />
               </Button>
             </Link>

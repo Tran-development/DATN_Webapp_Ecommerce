@@ -36,7 +36,7 @@ const AllUsers = () => {
 
     {
       field: "name",
-      headerName: "name",
+      headerName: "Name",
       minWidth: 130,
       flex: 0.7,
     },
@@ -57,7 +57,7 @@ const AllUsers = () => {
 
     {
       field: "joinedAt",
-      headerName: "joinedAt",
+      headerName: "Joined At",
       type: "text",
       minWidth: 130,
       flex: 0.8,
@@ -67,13 +67,13 @@ const AllUsers = () => {
       field: " ",
       flex: 1,
       minWidth: 150,
-      headerName: "Delete User",
+      headerName: "Action",
       type: "number",
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-            <Button onClick={() => setUserId(params.id) || setOpen(true)}>
+            <Button onClick={() => setUserId(params.id) || setOpen(true)} style={{ background: "#ef3a57", color: "#fff"}}> 
               <AiOutlineDelete size={20} />
             </Button>
           </>
